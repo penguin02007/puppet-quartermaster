@@ -72,11 +72,13 @@ class quartermaster (
   $go_version                       = '1.9.2',
   $terraform_version                = '0.11.0',
   $proxydhcp_subnets                = [],
+  $primary_interface                = lookup ('primary_interface'),
+  $primary_interface_ip             = "$::ipaddress_${primary_interface}",
 
 #  $linux                            = hiera('linux',{}),
 #  $windows                          = hiera('windows',{}),
 
-  $enable_poap                      = undef,
+#  $enable_poap                      = undef,
   $enable_hp_spp                    = undef,
   $hp_spp_iso_complete_url_location = 'ftp://ftp.hp.com/pub/softlib2/software1/cd-generic/p67859018/v108240/SPP2015040.2015_0407.5.iso',
   $hp_spp_iso_name                  = 'SPP2015040.2015_0407.5.iso',

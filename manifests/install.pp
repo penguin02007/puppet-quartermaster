@@ -8,6 +8,8 @@ class quartermaster::install (
   $puppetmaster                  = $quartermaster::puppetmaster,
   $use_local_proxy               = $quartermaster::use_local_proxy,
   $vnc_passwd                    = $quartermaster::vnc_passwd,
+  $primary_interface             = lookup ('primary_interface'),
+  $primary_interface_ip          = "$::ipaddress_enp0s8",
 ){
 
   include ::stdlib
@@ -333,7 +335,7 @@ nameserver 4.2.2.2
 
   class { 'dnsmasq':
 #  Begin Disable DNS Cache
-    port              => 0,
+    port              => 53,
     expand_hosts      => false,
     bogus_priv        => false,
     no_negcache       => false,
@@ -345,7 +347,8 @@ nameserver 4.2.2.2
     cache_size        => '0',
 #  End Disable DNS Cache
 #  Begin Enable DNS Cache
-#    interface         => 'lo',
+    interface         => $primary_interface,
+    listen_address    => $primary_interface_ip,
 #    expand_hosts      => true,
 #    dhcp_no_override  => true,
 #    domain_needed     => true,
@@ -366,8 +369,8 @@ nameserver 4.2.2.2
     },
   }
   dnsmasq::dhcp{'ProxyDHCP-PXE':
-    dhcp_start => "${::ipaddress},proxy",
-    dhcp_end   => $::netmask,
+    dhcp_start => "$primary_interface_ip,proxy",
+    dhcp_end   => "$::netmask",
     lease_time => '',
     netmask    => '',
   }
@@ -376,7 +379,7 @@ nameserver 4.2.2.2
     content => '6,2b',
   }
   dnsmasq::pxe_service{'Quartermaster PXE Provisioning':
-    content => 'pxelinux/pxelinux',
+    content => 'pxelinux/pxelinux,',
   }
 #  dnsmasq::dhcpboot{'proxydhcp':
 #    file => 'pxelinux/pxelinux.0',
@@ -593,8 +596,8 @@ nameserver 4.2.2.2
       path   => '/etc/environment',
       match   => 'PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"',
       line   => "PATH=\"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games\"
-http_proxy=http://${::ipaddress}:3128/
-ftp_proxy=http://${::ipaddress}:3128/
+http_proxy=http://$primary_interface_ip:3128/
+ftp_proxy=http://$primary_interface_ip:3128/
 ",
     }
   }

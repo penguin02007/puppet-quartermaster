@@ -2,7 +2,6 @@ class { 'quartermaster':
     dban_enable          => true,
     matchbox_enable      => true,
     puppetmaster         => "puppetmaster.${domain}",
-    preferred_nameserver => $::dhcp,
   }
   # Fedora
   quartermaster::pxelinux{'fedora-27-x86_64':}
@@ -20,4 +19,3 @@ class { 'quartermaster':
   quartermaster::pxelinux{'coreos-stable-amd64':}
   # RancherOS
   quartermaster::pxelinux{'rancheros-1.3.0-amd64':}
-}
