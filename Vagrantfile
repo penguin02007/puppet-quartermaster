@@ -38,7 +38,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "quartermaster" do |v|
 #   v.vm.box = "ubuntu/xenial64"
     v.vm.hostname = "quartermaster.contoso.ltd"
-    v.vm.network "private_network", ip: "192.168.0.22"
+    v.vm.network "public_network", ip: "192.168.4.40"
   end
 
 end
